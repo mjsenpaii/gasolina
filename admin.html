@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fuel Tracker Admin Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --bg-0: #030615;
+        --bg-1: #071127;
+        --surface: rgba(11, 18, 42, 0.9);
+        --border: rgba(130, 157, 255, 0.14);
+        --text: #f7f9ff;
+        --text-soft: #aeb8d6;
+        --shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: "Inter", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.15), transparent 26%),
+          radial-gradient(circle at top right, rgba(236, 72, 153, 0.12), transparent 22%),
+          linear-gradient(180deg, #020617 0%, #020b20 48%, #050b1a 100%);
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .auth-card {
+        width: min(100%, 520px);
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(6, 13, 35, 0.96), rgba(5, 10, 28, 0.92));
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .brand__icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2563eb, #7c3aed, #ec4899);
+        font-size: 1.4rem;
+      }
+
+      .brand h1 {
+        margin: 0 0 4px;
+        font-size: 1.7rem;
+      }
+
+      .brand p {
+        margin: 0;
+        color: var(--text-soft);
+      }
+
+      .form {
+        display: grid;
+        gap: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .field input {
+        height: 54px;
+        border-radius: 16px;
+        border: 1px solid rgba(160, 180, 255, 0.16);
+        background: rgba(18, 25, 52, 0.92);
+        color: var(--text);
+        padding: 0 16px;
+        font: inherit;
+      }
+
+      .field input:focus {
+        outline: none;
+        border-color: rgba(96, 165, 250, 0.7);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 6px;
+      }
+
+      .btn {
+        height: 54px;
+        border: 0;
+        border-radius: 16px;
+        padding: 0 18px;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        flex: 1;
+        color: white;
+        background: linear-gradient(135deg, #ef4444, #db2777);
+      }
+
+      .btn-secondary {
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(31, 41, 82, 0.9);
+        border: 1px solid rgba(151, 170, 255, 0.12);
+      }
+
+      .message {
+        margin-top: 12px;
+        min-height: 20px;
+        font-size: 0.92rem;
+        color: #fca5a5;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="auth-card">
+      <div class="brand">
+        <div class="brand__icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h1>Admin Login</h1>
+          <p>Sign in to manage stations and fuel prices.</p>
+        </div>
+      </div>
+
+      <form id="adminLoginForm" class="form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="admin@example.com" required />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Enter password" required />
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Sign in
+          </button>
+
+          <a href="/index.html" class="btn btn-secondary" aria-label="Back to tracker">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </a>
+        </div>
+
+        <div id="authMessage" class="message"></div>
+      </form>
+    </main>
+
+    <script type="module" src="/src/presentation/admin-login.ts"></script>
+  </body>
+</html>
