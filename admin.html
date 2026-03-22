@@ -1,203 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fuel Tracker Admin Login</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Auth</title>
 
-    <style>
-      :root {
-        --bg-0: #030615;
-        --bg-1: #071127;
-        --surface: rgba(11, 18, 42, 0.9);
-        --border: rgba(130, 157, 255, 0.14);
-        --text: #f7f9ff;
-        --text-soft: #aeb8d6;
-        --shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
-      }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Questrial&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-      * {
-        box-sizing: border-box;
-      }
+  <style>
+    /* * ABSOLUTE MINIMALIST GOD MODE */
+    :root {
+      --bg: #000000;
+      --text-primary: #ffffff;
+      --text-secondary: #666666;
+      --border-dim: #222222;
+      --border-active: #ffffff;
+    }
 
-      html,
-      body {
-        margin: 0;
-        min-height: 100%;
-        font-family: "Inter", sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at top left, rgba(37, 99, 235, 0.15), transparent 26%),
-          radial-gradient(circle at top right, rgba(236, 72, 153, 0.12), transparent 22%),
-          linear-gradient(180deg, #020617 0%, #020b20 48%, #050b1a 100%);
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      body {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 24px;
-      }
+    html,
+    body {
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Questrial', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
 
-      .auth-card {
-        width: min(100%, 520px);
-        border-radius: 28px;
-        border: 1px solid var(--border);
-        background: linear-gradient(180deg, rgba(6, 13, 35, 0.96), rgba(5, 10, 28, 0.92));
-        box-shadow: var(--shadow);
-        padding: 28px;
-      }
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+    }
 
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 20px;
-      }
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-      .brand__icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #2563eb, #7c3aed, #ec4899);
-        font-size: 1.4rem;
-      }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
 
-      .brand h1 {
-        margin: 0 0 4px;
-        font-size: 1.7rem;
-      }
+    .header p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
 
-      .brand p {
-        margin: 0;
-        color: var(--text-soft);
-      }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
 
-      .form {
-        display: grid;
-        gap: 14px;
-      }
+    .field {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .field {
-        display: grid;
-        gap: 8px;
-      }
+    .field label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
 
-      .field label {
-        font-size: 0.92rem;
-        font-weight: 700;
-      }
+    .field input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--border-dim);
+      color: var(--text-primary);
+      font-family: 'Questrial', sans-serif;
+      font-size: 1.5rem;
+      padding: 8px 0;
+      border-radius: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-      .field input {
-        height: 54px;
-        border-radius: 16px;
-        border: 1px solid rgba(160, 180, 255, 0.16);
-        background: rgba(18, 25, 52, 0.92);
-        color: var(--text);
-        padding: 0 16px;
-        font: inherit;
-      }
+    .field input:focus {
+      outline: none;
+      border-bottom-color: var(--border-active);
+    }
 
-      .field input:focus {
-        outline: none;
-        border-color: rgba(96, 165, 250, 0.7);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-      }
+    .field input:focus+label,
+    .field input:not(:placeholder-shown)+label {
+      color: var(--text-primary);
+    }
 
-      .actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 6px;
-      }
+    .field input::placeholder {
+      color: #2a2a2a;
+    }
 
-      .btn {
-        height: 54px;
-        border: 0;
-        border-radius: 16px;
-        padding: 0 18px;
-        font: inherit;
-        font-weight: 800;
-        cursor: pointer;
-      }
+    /* Webkit Autofill fix for pure black */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
+      -webkit-text-fill-color: var(--text-primary) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
 
-      .btn-primary {
-        flex: 1;
-        color: white;
-        background: linear-gradient(135deg, #ef4444, #db2777);
-      }
+    .actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center;
+    }
 
-      .btn-secondary {
-        color: white;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(31, 41, 82, 0.9);
-        border: 1px solid rgba(151, 170, 255, 0.12);
-      }
+    .btn {
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
 
-      .message {
-        margin-top: 12px;
-        min-height: 20px;
-        font-size: 0.92rem;
-        color: #fca5a5;
-      }
-    </style>
-  </head>
-  <body>
-    <main class="auth-card">
-      <div class="brand">
-        <div class="brand__icon">
-          <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <div>
-          <h1>Admin Login</h1>
-          <p>Sign in to manage stations and fuel prices.</p>
-        </div>
+    .btn-primary {
+      flex: 1;
+      background: var(--text-primary);
+      color: var(--bg);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      height: 60px;
+      border-radius: 4px;
+    }
+
+    .btn-primary:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      width: 60px;
+      height: 60px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      border: 2px solid var(--border-dim);
+      border-radius: 4px;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+
+    .message {
+      font-family: 'Questrial', sans-serif;
+      font-size: 0.9rem;
+      color: #ff3333;
+      min-height: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="auth-container">
+    <div class="header">
+      <h1>Admin</h1>
+      <p>Restricted access protocol.</p>
+    </div>
+
+    <form id="adminLoginForm" class="form">
+      <div class="field">
+        <label for="email">Identification</label>
+        <input id="email" name="email" type="email" placeholder="admin@fuwell.io" required autocomplete="email" />
       </div>
 
-      <form id="adminLoginForm" class="form">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="admin@example.com" required />
-        </div>
+      <div class="field">
+        <label for="password">Passcode</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" required
+          autocomplete="current-password" />
+      </div>
 
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" placeholder="Enter password" required />
-        </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">
+          Authenticate
+        </button>
+        <a href="/index.html" class="btn btn-secondary" aria-label="Return to Map">
+          <i class="fa-solid fa-arrow-left-long"></i>
+        </a>
+      </div>
 
-        <div class="actions">
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            Sign in
-          </button>
+      <div id="authMessage" class="message"></div>
+    </form>
+  </main>
 
-          <a href="/index.html" class="btn btn-secondary" aria-label="Back to tracker">
-            <i class="fa-solid fa-map-location-dot"></i>
-          </a>
-        </div>
+  <script type="module" src="/src/presentation/admin-login.ts"></script>
+</body>
 
-        <div id="authMessage" class="message"></div>
-      </form>
-    </main>
-
-    <script type="module" src="/src/presentation/admin-login.ts"></script>
-  </body>
 </html>

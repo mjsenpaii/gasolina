@@ -1,784 +1,751 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fuel Tracker Admin Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Questrial&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      referrerpolicy="no-referrer"
-    />
-    <style>
-      :root {
-        --bg-0: #040814;
-        --bg-1: #091226;
-        --surface: rgba(7, 13, 31, 0.88);
-        --surface-2: rgba(12, 20, 41, 0.92);
-        --surface-3: rgba(255, 255, 255, 0.05);
-        --border: rgba(148, 163, 184, 0.14);
-        --text: #f8fbff;
-        --muted: #9fb1cc;
-        --shadow: 0 24px 70px rgba(2, 6, 23, 0.42);
-        --green: #22c55e;
-        --red: #ef4444;
-        --blue: #3b82f6;
-        --amber: #f59e0b;
-        --radius-xl: 30px;
-        --radius-lg: 22px;
-        --radius-md: 16px;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Questrial, sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at top left, rgba(239, 68, 68, 0.16), transparent 20%),
-          radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 20%),
-          radial-gradient(circle at bottom, rgba(34, 197, 94, 0.14), transparent 22%),
-          linear-gradient(180deg, var(--bg-0), var(--bg-1));
-      }
-
-      .shell {
-        width: min(100%, 1480px);
-        margin: 0 auto;
-        padding: 1rem;
-        display: grid;
-        gap: 1rem;
-      }
-
-      .hero,
-      .card,
-      .status-banner {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        border-radius: var(--radius-xl);
-      }
-
-      .hero {
-        padding: 1rem 1.15rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .hero__lead {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-      }
-
-      .hero__icon {
-        width: 62px;
-        height: 62px;
-        border-radius: 20px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, #ef4444, #3b82f6 52%, #22c55e);
-        box-shadow: 0 16px 34px rgba(59, 130, 246, 0.28);
-      }
-
-      h1,
-      h2,
-      h3 {
-        margin: 0;
-        letter-spacing: -0.04em;
-        font-family: Poppins, sans-serif;
-      }
-
-      h1 {
-        font-size: 2rem;
-        font-weight: 900;
-      }
-
-      h2 {
-        font-size: 1.35rem;
-        font-weight: 900;
-      }
-
-      h3 {
-        font-size: 1rem;
-        font-weight: 900;
-      }
-
-      .muted {
-        color: var(--muted);
-        margin-top: 0.35rem;
-        line-height: 1.45;
-      }
-
-      .actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-
-      .button,
-      .button-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.55rem;
-        min-height: 48px;
-        padding: 0 1rem;
-        border-radius: 14px;
-        text-decoration: none;
-        font-weight: 800;
-        border: 1px solid transparent;
-        cursor: pointer;
-        font-family: Poppins, sans-serif;
-        font-size: inherit;
-      }
-
-      .button--primary {
-        background: linear-gradient(135deg, #ef4444, #be185d);
-        color: white;
-        box-shadow: 0 16px 30px rgba(239, 68, 68, 0.22);
-      }
-
-      .button--secondary,
-      .button-link {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text);
-        border-color: rgba(255, 255, 255, 0.06);
-      }
-
-      .status-banner {
-        padding: 0.92rem 1rem;
-        font-weight: 700;
-        font-family: Poppins, sans-serif;
-      }
-
-      .status-banner--loading {
-        color: #93c5fd;
-        background: rgba(30, 64, 175, 0.24);
-      }
-
-      .status-banner--error {
-        color: #fecaca;
-        background: rgba(127, 29, 29, 0.38);
-      }
-
-      .status-banner--success {
-        color: #bbf7d0;
-        background: rgba(21, 128, 61, 0.3);
-      }
-
-      .grid {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .dashboard-grid {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-      }
-
-      .card {
-        padding: 1.1rem;
-      }
-
-      .card-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-      }
-
-      .stats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.65rem;
-      }
-
-      .chip {
-        padding: 0.52rem 0.78rem;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 0.82rem;
-        font-weight: 800;
-        color: #dbeafe;
-        font-family: Poppins, sans-serif;
-      }
-
-      .fields {
-        display: grid;
-        gap: 0.85rem;
-      }
-
-      .row-2,
-      .row-3 {
-        display: grid;
-        gap: 0.85rem;
-      }
-
-      .label {
-        display: block;
-        font-size: 0.82rem;
-        font-weight: 800;
-        margin-bottom: 0.45rem;
-        color: #e5ecff;
-        font-family: Poppins, sans-serif;
-      }
-
-      .input,
-      .select,
-      .textarea {
-        width: 100%;
-        min-height: 52px;
-        padding: 0 0.95rem;
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text);
-        font-family: Questrial, sans-serif;
-        font-size: 1rem;
-      }
-
-      .select {
-        cursor: pointer;
-        appearance: none;
-        background-color: rgba(255, 255, 255, 0.04);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f8fbff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 20px;
-        padding-right: 2.5rem;
-        font-weight: 600;
-      }
-
-      .select option {
-        background-color: #0a1628;
-        color: #f8fbff;
-        padding: 0.75rem;
-        font-size: 1rem;
-        font-weight: 600;
-      }
-
-      .input[readonly] {
-        cursor: not-allowed;
-        color: #dbeafe;
-        background: rgba(255, 255, 255, 0.035);
-      }
-
-      .select:hover,
-      .input:hover:not([readonly]),
-      .textarea:hover {
-        border-color: rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.06);
-      }
-
-      .select:focus,
-      .input:focus,
-      .textarea:focus {
-        outline: none;
-        border-color: rgba(59, 130, 246, 0.5);
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-      }
-
-      .helper {
-        margin-top: 0.4rem;
-        color: var(--muted);
-        font-size: 0.82rem;
-      }
-
-      .map-panel {
-        display: grid;
-        gap: 0.9rem;
-      }
-
-      .map-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.8rem;
-        flex-wrap: wrap;
-      }
-
-      .picker-mode {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.7rem;
-        padding: 0.55rem 0.75rem;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-      }
-
-      .picker-mode label {
-        font-size: 0.82rem;
-        font-weight: 800;
-        color: #dbeafe;
-        font-family: Poppins, sans-serif;
-      }
-
-      .picker-mode select {
-        min-height: 42px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background-color: rgba(255, 255, 255, 0.06);
-        color: var(--text);
-        padding: 0 0.85rem;
-        font-family: Questrial, sans-serif;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23f8fbff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.65rem center;
-        background-size: 18px;
-        padding-right: 2.25rem;
-      }
-
-      .picker-mode select option {
-        background-color: #0a1628;
-        color: #f8fbff;
-        padding: 0.75rem;
-        font-weight: 600;
-      }
-
-      #adminMap {
-        width: 100%;
-        min-height: 420px;
-        border-radius: 22px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-      }
-
-      .map-hint {
-        color: var(--muted);
-        font-size: 0.9rem;
-        line-height: 1.45;
-      }
-
-      .forms-grid {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .fuel-grid {
-        display: grid;
-        gap: 0.85rem;
-      }
-
-      .fuel-card {
-        padding: 0.95rem;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-
-      .fuel-card--unleaded {
-        box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.16);
-      }
-
-      .fuel-card--premium {
-        box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.16);
-      }
-
-      .fuel-card--diesel {
-        box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.16);
-      }
-
-      .table-shell {
-        overflow-x: auto;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th,
-      td {
-        padding: 0.9rem 0.75rem;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        font-size: 0.92rem;
-        vertical-align: top;
-      }
-
-      th {
-        color: #cbd5e1;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-family: Poppins, sans-serif;
-      }
-
-      .empty-state {
-        padding: 1.25rem 0;
-        text-align: center;
-        color: var(--muted);
-      }
-
-      @media (min-width: 860px) {
-        .row-2 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (min-width: 1180px) {
-        .forms-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .fuel-grid {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .row-3 {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 1100px) {
-        .dashboard-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .shell {
-          padding: 0.85rem;
-        }
-
-        .hero,
-        .card,
-        .status-banner {
-          border-radius: 24px;
-        }
-
-        h1 {
-          font-size: 1.6rem;
-        }
-
-        #adminMap {
-          min-height: 340px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="shell">
-      <section class="hero">
-        <div class="hero__lead">
-          <div class="hero__icon">
-            <i class="fa-solid fa-shield-halved fa-lg"></i>
-          </div>
-          <div>
-            <h1>Fuel Tracker Admin</h1>
-            <p class="muted" id="authStateText">Loading admin session...</p>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuel Tracker Admin | God Mode</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Questrial&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    referrerpolicy="no-referrer" />
+
+  <style>
+    /* * ABSOLUTE MINIMALIST GOD MODE - ADMIN DASHBOARD */
+    :root {
+      /* Light Theme (Default) */
+      --bg: #ffffff;
+      --text-main: #000000;
+      --text-muted: #888888;
+      --border: #e0e0e0;
+      --border-hover: #000000;
+      --surface: #ffffff;
+      
+      --status-green: #000000; /* Minimalist override */
+      --status-red: #ff3333;
+      --status-blue: #000000;
+    }
+
+    [data-theme="dark"] {
+      /* Dark Theme */
+      --bg: #000000;
+      --text-main: #ffffff;
+      --text-muted: #666666;
+      --border: #2a2a2a;
+      --border-hover: #ffffff;
+      --surface: #000000;
+
+      --status-green: #ffffff;
+      --status-red: #ff3333;
+      --status-blue: #ffffff;
+    }
+
+    /* Reset & Base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Questrial', sans-serif;
+      color: var(--text-main);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .shell {
+      width: min(100%, 1480px);
+      margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    h1 { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+    h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    h3 { font-size: 1rem; font-weight: 700; }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* Minimalist Cards */
+    .hero,
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0; /* Zero rounded corners for God Mode */
+      padding: 2rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--text-main);
+      padding-bottom: 2rem;
+    }
+
+    .hero__lead {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .hero__icon {
+      font-size: 2.5rem;
+      color: var(--text-main);
+    }
+
+    /* Buttons */
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .button,
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      min-height: 52px;
+      padding: 0 2rem;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--text-main);
+    }
+
+    .button--primary {
+      background: var(--text-main);
+      color: var(--bg);
+    }
+
+    .button--primary:hover {
+      background: transparent;
+      color: var(--text-main);
+    }
+
+    .button--secondary,
+    .button-link {
+      background: transparent;
+      color: var(--text-main);
+    }
+
+    .button--secondary:hover,
+    .button-link:hover {
+      background: var(--text-main);
+      color: var(--bg);
+    }
+
+    .theme-toggle {
+      width: 52px;
+      height: 52px;
+      background: transparent;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      border-radius: 0;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-main);
+    }
+
+    /* Banners */
+    .status-banner {
+      padding: 1rem 1.5rem;
+      font-family: 'Questrial', sans-serif;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-banner--loading { border-color: var(--text-main); color: var(--text-main); }
+    .status-banner--loading::before {
+      content: '\f110';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      animation: spin 1s linear infinite;
+    }
+    
+    .status-banner--error { border-color: var(--status-red); color: var(--status-red); }
+    .status-banner--success { border-color: var(--status-green); color: var(--status-green); }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Layout Grids */
+    .grid { display: grid; gap: 2rem; }
+    .dashboard-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .forms-grid { display: grid; gap: 2rem; }
+
+    /* Cards Internal */
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-main);
+      font-family: 'Poppins', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Forms & Inputs */
+    .fields, .row-2, .row-3 {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .label {
+      display: block;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.5rem 0;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: transparent;
+      color: var(--text-main);
+      font-family: 'Questrial', sans-serif;
+      font-size: 1.25rem;
+      border-radius: 0;
+      transition: border-color 0.3s ease;
+    }
+
+    .select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0 center;
+      padding-right: 2rem;
+    }
+
+    [data-theme="dark"] .select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    }
+
+    .select option {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-size: 1rem;
+    }
+
+    .input[readonly] {
+      color: var(--text-muted);
+      border-bottom-style: dashed;
+      cursor: not-allowed;
+    }
+
+    .select:focus,
+    .input:focus,
+    .textarea:focus {
+      outline: none;
+      border-bottom-color: var(--border-hover);
+    }
+
+    .helper {
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Map Elements */
+    .map-panel { display: grid; gap: 1.5rem; }
+
+    .map-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .picker-mode {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .picker-mode label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .picker-mode select {
+      font-size: 1rem;
+      min-height: auto;
+      border-bottom: 1px solid var(--text-main);
+      padding: 0.25rem 1.5rem 0.25rem 0;
+    }
+
+    #adminMap {
+      width: 100%;
+      min-height: 500px;
+      border: 1px solid var(--border);
+      background: transparent;
+    }
+
+    /* Fuel Cards */
+    .fuel-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .fuel-card {
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      background: transparent;
+    }
+
+    .fuel-card h3 {
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Table Styles */
+    .table-shell {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1.25rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    td {
+      font-size: 1rem;
+    }
+
+    /* Responsive */
+    @media (min-width: 860px) {
+      .row-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 1180px) {
+      .forms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .fuel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1100px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .shell { padding: 1rem; }
+      .hero, .card { padding: 1.5rem; }
+      h1 { font-size: 1.8rem; }
+      #adminMap { min-height: 350px; }
+      .actions { width: 100%; justify-content: space-between; }
+      .button-link { flex: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero__lead">
+        <div class="hero__icon">
+          <i class="fa-solid fa-layer-group"></i>
         </div>
-
-        <div class="actions">
-          <a class="button-link" href="/index.html">
-            <i class="fa-solid fa-map-location-dot"></i>
-            Tracker
-          </a>
-          <button class="button button--secondary" id="logoutButton" type="button">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            Log out
-          </button>
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p class="muted" id="authStateText">Authenticating secure session...</p>
         </div>
-      </section>
-
-      <div id="adminLoadingBanner" class="status-banner status-banner--loading" hidden>
-        Loading secure admin data...
       </div>
-      <div id="adminErrorBanner" class="status-banner status-banner--error" hidden></div>
-      <div id="adminSuccessBanner" class="status-banner status-banner--success" hidden></div>
 
-      <section id="dashboardSection" class="grid dashboard-grid" hidden>
-        <article class="card map-panel">
-          <div class="card-head">
-            <div>
-              <h2>Map location picker</h2>
-              <p class="muted">
-                Click the map to set coordinates for Create or Update. Existing stations are shown as live markers.
-              </p>
-            </div>
+      <div class="actions">
+        <a class="button-link" href="/index.html">
+          Tracker
+        </a>
+        <button class="button button--secondary" id="logoutButton" type="button">
+          Log out
+        </button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+      </div>
+    </section>
 
-            <div class="stats">
-              <span class="chip" id="stationCountChip">0 stations</span>
-              <span class="chip" id="townCountChip">0 towns</span>
-            </div>
-          </div>
-
-          <div class="map-toolbar">
-            <div class="picker-mode">
-              <label for="pickerTarget">Map click target</label>
-              <select id="pickerTarget">
-                <option value="create">Create form</option>
-                <option value="update">Update form</option>
-              </select>
-            </div>
-
-            <div class="chip" id="mapHint">
-              Tap the map to choose a station location.
-            </div>
-          </div>
-
-          <div id="adminMap"></div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <div>
-              <h2>Station overview</h2>
-              <p class="muted">
-                Live station data from Supabase, with full town coverage across Marinduque.
-              </p>
-            </div>
-            <div class="stats">
-              <span class="chip">Protected</span>
-              <span class="chip">Create</span>
-              <span class="chip">Update</span>
-            </div>
-          </div>
-
-          <div class="table-shell">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Town</th>
-                  <th>Coordinates</th>
-                  <th>Unleaded</th>
-                  <th>Premium</th>
-                  <th>Diesel</th>
-                </tr>
-              </thead>
-              <tbody id="stationTableBody"></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      <section id="dashboardForms" class="forms-grid" hidden>
-        <article class="card">
-          <div class="card-head">
-            <div>
-              <h2>Create station</h2>
-              <p class="muted">
-                Choose a town, click the map, then save the new station with fuel pricing and availability.
-              </p>
-            </div>
-          </div>
-
-          <form id="createStationForm" class="fields">
-            <div>
-              <label class="label" for="name">Station Name</label>
-              <input class="input" id="name" name="name" type="text" required />
-            </div>
-
-            <div>
-              <label class="label" for="town">Town</label>
-              <select class="select" id="town" name="town" required></select>
-            </div>
-
-            <div class="row-2">
-              <div>
-                <label class="label" for="latitude">Latitude</label>
-                <input class="input" id="latitude" name="latitude" type="number" step="any" readonly required />
-              </div>
-              <div>
-                <label class="label" for="longitude">Longitude</label>
-                <input class="input" id="longitude" name="longitude" type="number" step="any" readonly required />
-              </div>
-            </div>
-            <p class="helper">
-              Coordinates come from the map picker. Switch the map target to <strong>Create form</strong> if needed.
+    <section id="dashboardSection" class="grid dashboard-grid" hidden>
+      <article class="card map-panel">
+        <div class="card-head">
+          <div>
+            <h2>Coordinates</h2>
+            <p class="muted">
+              Define target location for Create/Update operations.
             </p>
+          </div>
 
-            <div class="fuel-grid">
-              <section class="fuel-card fuel-card--unleaded">
-                <h3>Unleaded</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="unleaded_price">Price</label>
-                    <input class="input" id="unleaded_price" name="unleaded_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="unleaded_status">Availability</label>
-                    <select class="select" id="unleaded_status" name="unleaded_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
+          <div class="stats">
+            <span class="chip" id="stationCountChip">0 Nodes</span>
+            <span class="chip" id="townCountChip">0 Sectors</span>
+          </div>
+        </div>
 
-              <section class="fuel-card fuel-card--premium">
-                <h3>Premium</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="premium_price">Price</label>
-                    <input class="input" id="premium_price" name="premium_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="premium_status">Availability</label>
-                    <select class="select" id="premium_status" name="premium_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
+        <div class="map-toolbar">
+          <div class="picker-mode">
+            <label for="pickerTarget">Target Vector</label>
+            <select id="pickerTarget">
+              <option value="create">Create Block</option>
+              <option value="update">Update Block</option>
+            </select>
+          </div>
 
-              <section class="fuel-card fuel-card--diesel">
-                <h3>Diesel</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="diesel_price">Price</label>
-                    <input class="input" id="diesel_price" name="diesel_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="diesel_status">Availability</label>
-                    <select class="select" id="diesel_status" name="diesel_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
-                </div>
-              </section>
-            </div>
+          <div class="chip" id="mapHint" style="border-style: dashed;">
+            Awaiting map input.
+          </div>
+        </div>
 
-            <button class="button button--primary" type="submit">
-              <i class="fa-solid fa-plus"></i>
-              Add station
-            </button>
-          </form>
-        </article>
+        <div id="adminMap"></div>
+      </article>
 
-        <article class="card">
-          <div class="card-head">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>System Index</h2>
+            <p class="muted">
+              Live database feed of all active stations.
+            </p>
+          </div>
+          <div class="stats">
+            <span class="chip" style="background: var(--text-main); color: var(--bg);">Live</span>
+          </div>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Identifier</th>
+                <th>Sector</th>
+                <th>Vector (Lat/Lng)</th>
+                <th>UNL</th>
+                <th>PRM</th>
+                <th>DSL</th>
+              </tr>
+            </thead>
+            <tbody id="stationTableBody"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="dashboardForms" class="forms-grid" hidden>
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Initialize Node</h2>
+            <p class="muted">
+              Register a new station into the system matrix.
+            </p>
+          </div>
+        </div>
+
+        <form id="createStationForm" class="fields">
+          <div>
+            <label class="label" for="name">Designation</label>
+            <input class="input" id="name" name="name" type="text" required />
+          </div>
+
+          <div>
+            <label class="label" for="town">Sector</label>
+            <select class="select" id="town" name="town" required></select>
+          </div>
+
+          <div class="row-2">
             <div>
-              <h2>Edit station</h2>
-              <p class="muted">
-                Select an existing station, then click the map to update coordinates or edit pricing below.
-              </p>
+              <label class="label" for="latitude">Latitude</label>
+              <input class="input" id="latitude" name="latitude" type="number" step="any" readonly required />
+            </div>
+            <div>
+              <label class="label" for="longitude">Longitude</label>
+              <input class="input" id="longitude" name="longitude" type="number" step="any" readonly required />
+            </div>
+          </div>
+          <p class="helper">
+            Vector locked to map selection. Target: <strong>Create Block</strong>.
+          </p>
+
+          <div class="fuel-grid">
+            <section class="fuel-card fuel-card--unleaded">
+              <h3>Unleaded</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="unleaded_price">Value (PHP)</label>
+                  <input class="input" id="unleaded_price" name="unleaded_price" type="number" step="0.01" />
+                </div>
+                <div>
+                  <label class="label" for="unleaded_status">Status</label>
+                  <select class="select" id="unleaded_status" name="unleaded_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section class="fuel-card fuel-card--premium">
+              <h3>Premium</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="premium_price">Value (PHP)</label>
+                  <input class="input" id="premium_price" name="premium_price" type="number" step="0.01" />
+                </div>
+                <div>
+                  <label class="label" for="premium_status">Status</label>
+                  <select class="select" id="premium_status" name="premium_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section class="fuel-card fuel-card--diesel">
+              <h3>Diesel</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="diesel_price">Value (PHP)</label>
+                  <input class="input" id="diesel_price" name="diesel_price" type="number" step="0.01" />
+                </div>
+                <div>
+                  <label class="label" for="diesel_status">Status</label>
+                  <select class="select" id="diesel_status" name="diesel_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <button class="button button--primary" type="submit" style="margin-top: 1rem;">
+            Execute Creation
+          </button>
+        </form>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Override Node</h2>
+            <p class="muted">
+              Modify an existing station's parameters.
+            </p>
+          </div>
+        </div>
+
+        <form id="updatePriceForm" class="fields">
+          <div>
+            <label class="label" for="stationId">Target Node</label>
+            <select class="select" id="stationId" name="stationId"></select>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label class="label" for="update_name">Designation</label>
+              <input class="input" id="update_name" name="update_name" type="text" required />
+            </div>
+            <div>
+              <label class="label" for="update_town">Sector</label>
+              <select class="select" id="update_town" name="update_town" required></select>
             </div>
           </div>
 
-          <form id="updatePriceForm" class="fields">
+          <div class="row-2">
             <div>
-              <label class="label" for="stationId">Station</label>
-              <select class="select" id="stationId" name="stationId"></select>
+              <label class="label" for="update_latitude">Latitude</label>
+              <input class="input" id="update_latitude" name="update_latitude" type="number" step="any" readonly required />
             </div>
-
-            <div class="row-2">
-              <div>
-                <label class="label" for="update_name">Station Name</label>
-                <input class="input" id="update_name" name="update_name" type="text" required />
-              </div>
-              <div>
-                <label class="label" for="update_town">Town</label>
-                <select class="select" id="update_town" name="update_town" required></select>
-              </div>
+            <div>
+              <label class="label" for="update_longitude">Longitude</label>
+              <input class="input" id="update_longitude" name="update_longitude" type="number" step="any" readonly required />
             </div>
+          </div>
+          <p class="helper">
+            Vector locked to map selection. Target: <strong>Update Block</strong>.
+          </p>
 
-            <div class="row-2">
-              <div>
-                <label class="label" for="update_latitude">Latitude</label>
-                <input class="input" id="update_latitude" name="update_latitude" type="number" step="any" readonly required />
-              </div>
-              <div>
-                <label class="label" for="update_longitude">Longitude</label>
-                <input class="input" id="update_longitude" name="update_longitude" type="number" step="any" readonly required />
-              </div>
-            </div>
-            <p class="helper">
-              Coordinates come from the map picker. Switch the map target to <strong>Update form</strong> if needed.
-            </p>
-
-            <div class="fuel-grid">
-              <section class="fuel-card fuel-card--unleaded">
-                <h3>Unleaded</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="update_unleaded_price">Price</label>
-                    <input class="input" id="update_unleaded_price" name="update_unleaded_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="update_unleaded_status">Availability</label>
-                    <select class="select" id="update_unleaded_status" name="update_unleaded_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
+          <div class="fuel-grid">
+            <section class="fuel-card fuel-card--unleaded">
+              <h3>Unleaded</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="update_unleaded_price">Value (PHP)</label>
+                  <input class="input" id="update_unleaded_price" name="update_unleaded_price" type="number" step="0.01" />
                 </div>
-              </section>
-
-              <section class="fuel-card fuel-card--premium">
-                <h3>Premium</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="update_premium_price">Price</label>
-                    <input class="input" id="update_premium_price" name="update_premium_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="update_premium_status">Availability</label>
-                    <select class="select" id="update_premium_status" name="update_premium_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
+                <div>
+                  <label class="label" for="update_unleaded_status">Status</label>
+                  <select class="select" id="update_unleaded_status" name="update_unleaded_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
                 </div>
-              </section>
+              </div>
+            </section>
 
-              <section class="fuel-card fuel-card--diesel">
-                <h3>Diesel</h3>
-                <div class="fields" style="margin-top: 0.75rem;">
-                  <div>
-                    <label class="label" for="update_diesel_price">Price</label>
-                    <input class="input" id="update_diesel_price" name="update_diesel_price" type="number" step="0.01" />
-                  </div>
-                  <div>
-                    <label class="label" for="update_diesel_status">Availability</label>
-                    <select class="select" id="update_diesel_status" name="update_diesel_status">
-                      <option value="available">Available</option>
-                      <option value="no_data">No data</option>
-                      <option value="out_of_stock">Out of stock</option>
-                    </select>
-                  </div>
+            <section class="fuel-card fuel-card--premium">
+              <h3>Premium</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="update_premium_price">Value (PHP)</label>
+                  <input class="input" id="update_premium_price" name="update_premium_price" type="number" step="0.01" />
                 </div>
-              </section>
-            </div>
+                <div>
+                  <label class="label" for="update_premium_status">Status</label>
+                  <select class="select" id="update_premium_status" name="update_premium_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-            <button class="button button--primary" type="submit">
-              <i class="fa-solid fa-pen-to-square"></i>
-              Save changes
-            </button>
-          </form>
-        </article>
-      </section>
-    </main>
+            <section class="fuel-card fuel-card--diesel">
+              <h3>Diesel</h3>
+              <div class="fields">
+                <div>
+                  <label class="label" for="update_diesel_price">Value (PHP)</label>
+                  <input class="input" id="update_diesel_price" name="update_diesel_price" type="number" step="0.01" />
+                </div>
+                <div>
+                  <label class="label" for="update_diesel_status">Status</label>
+                  <select class="select" id="update_diesel_status" name="update_diesel_status">
+                    <option value="available">Active</option>
+                    <option value="no_data">Null</option>
+                    <option value="out_of_stock">Depleted</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+          </div>
 
-    <script type="module" src="/src/main-admin-dashboard.ts"></script>
-  </body>
+          <button class="button button--primary" type="submit" style="margin-top: 1rem;">
+            Commit Override
+          </button>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', currentTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  </script>
+
+  <script type="module" src="/src/main-admin-dashboard.ts"></script>
+</body>
+
 </html>
