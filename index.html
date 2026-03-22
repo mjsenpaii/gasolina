@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
+  <!--
+    File: index.html
+    Description: Fully responsive FuWell dashboard with improved mobile layout,
+    sticky-bottom mobile filter sheet, adaptive map/sidebar sections, and
+    refined light/dark theme behavior.
+    Version: 2.0.0
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FuWell | Minimalist God Mode</title>
@@ -11,319 +18,442 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Questrial&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
 
   <style>
-    /* * ABSOLUTE MINIMALIST GOD MODE - MAIN DASHBOARD */
+    /*
+     * File: index.css
+     * Description: Responsive styling for the FuWell dashboard.
+     * Version: 2.0.0
+     */
+
     :root {
-      /* Light Theme (Default) */
       --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-muted: #fafafa;
       --text-main: #000000;
-      --text-muted: #888888;
-      --border: #e0e0e0;
-      --border-hover: #000000;
+      --text-muted: #7d7d7d;
+      --border: #e5e5e5;
+      --border-strong: #000000;
       --accent: #000000;
       --accent-invert: #ffffff;
+      --shadow-soft: 0 14px 30px rgba(0, 0, 0, 0.06);
+      --shadow-mobile-sheet: 0 -10px 30px rgba(0, 0, 0, 0.12);
 
-      /* Pin colors kept functional but flat */
-      --pin-below: #000000; /* Best price is solid black/white */
-      --pin-near: #888888;
-      --pin-above: #cccccc;
-      --pin-nodata: #eeeeee;
+      --pin-below: #10b981;
+      --pin-near: #f59e0b;
+      --pin-above: #ef4444;
+      --pin-nodata: #9ca3af;
+      --pin-out: #000000;
+
+      --radius-sm: 0.875rem;
+      --radius-md: 1.125rem;
+      --radius-lg: 1.5rem;
+
+      --space-xs: 0.5rem;
+      --space-sm: 0.75rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 2.5rem;
+
+      --container-width: 1440px;
+      --mobile-sheet-peek: 76px;
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
     }
 
     [data-theme="dark"] {
-      /* Dark Theme */
-      --bg: #000000;
+      --bg: #050505;
+      --surface: #0b0b0b;
+      --surface-muted: #101010;
       --text-main: #ffffff;
-      --text-muted: #666666;
-      --border: #222222;
-      --border-hover: #ffffff;
+      --text-muted: #8a8a8a;
+      --border: #232323;
+      --border-strong: #ffffff;
       --accent: #ffffff;
       --accent-invert: #000000;
+      --shadow-soft: 0 16px 34px rgba(0, 0, 0, 0.28);
+      --shadow-mobile-sheet: 0 -12px 34px rgba(0, 0, 0, 0.45);
 
-      --pin-below: #ffffff;
-      --pin-near: #666666;
-      --pin-above: #333333;
-      --pin-nodata: #111111;
+      --pin-out: #ffffff;
     }
 
-    /* Reset & Base */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html,
-    body {
-      font-family: "Questrial", sans-serif;
-      color: var(--text-main);
-      background: var(--bg);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      min-height: 100vh;
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
+    html {
+      scroll-behavior: smooth;
     }
 
-    h1, h2, h3, h4 {
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: "Questrial", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+    }
+
+    img,
+    svg,
+    canvas {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    select,
+    a {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
       font-family: "Poppins", sans-serif;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: -0.02em;
+      color: var(--text-main);
     }
 
     .page-shell {
-      max-width: 1440px;
+      width: min(100%, var(--container-width));
       margin: 0 auto;
-      padding: 2rem;
+      padding: clamp(0.875rem, 2vw, 2rem);
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: clamp(1rem, 2vw, 2rem);
     }
 
-    /* Structural Minimal Card */
     .minimal-card {
-      background: transparent;
+      background: var(--surface);
       border: 1px solid var(--border);
-      transition: border-color 0.3s ease;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+      min-width: 0;
     }
 
-    /* Hero Section */
     .hero-section {
-      padding: 2rem;
+      padding: clamp(1rem, 2.5vw, 2rem);
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      gap: 2rem;
+      gap: 1rem 1.5rem;
       flex-wrap: wrap;
-      border-bottom: 2px solid var(--text-main);
     }
 
     .hero-content {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
+      min-width: 0;
+      flex: 1 1 420px;
     }
 
     .hero-icon {
-      font-size: 2.5rem;
-      color: var(--text-main);
+      width: clamp(3.2rem, 5vw, 4.25rem);
+      height: clamp(3.2rem, 5vw, 4.25rem);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      flex-shrink: 0;
     }
 
     .hero-text h1 {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: clamp(1.9rem, 4vw, 3rem);
       line-height: 1;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.04em;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      margin-bottom: 0.45rem;
     }
 
     .hero-text p {
       color: var(--text-muted);
-      font-size: 1rem;
-      max-width: 500px;
-      line-height: 1.4;
+      font-size: clamp(0.92rem, 1.4vw, 1rem);
+      line-height: 1.55;
+      max-width: 560px;
     }
 
-    /* Hero Actions */
     .hero-actions {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      flex: 1 1 240px;
+    }
+
+    .admin-link,
+    .theme-toggle {
+      min-height: 3rem;
+      border-radius: 999px;
+      transition:
+        transform var(--transition-fast),
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        opacity var(--transition-fast);
+    }
+
+    .admin-link:hover,
+    .theme-toggle:hover {
+      transform: translateY(-1px);
     }
 
     .admin-link {
-      height: 48px;
-      padding: 0 2rem;
+      padding: 0 1.25rem;
+      border: 1px solid var(--border-strong);
       background: var(--text-main);
       color: var(--bg);
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       text-decoration: none;
       font-family: "Poppins", sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
       letter-spacing: 0.1em;
-      transition: opacity 0.2s ease;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .admin-link:hover {
-      opacity: 0.8;
+      background: transparent;
+      color: var(--text-main);
+      opacity: 1;
     }
 
     .theme-toggle {
-      width: 48px;
-      height: 48px;
-      background: transparent;
+      width: 3rem;
+      min-width: 3rem;
       border: 1px solid var(--border);
-      display: flex;
+      background: transparent;
+      color: var(--text-main);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-size: 1.25rem;
-      color: var(--text-main);
-      transition: all 0.2s ease;
+      font-size: 1rem;
     }
 
     .theme-toggle:hover {
-      border-color: var(--text-main);
+      border-color: var(--border-strong);
     }
 
-    /* Main Grid */
+    .status-banner {
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .status-banner[hidden] {
+      display: none !important;
+    }
+
+    .status-banner--error {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .status-banner--success {
+      border-color: #10b981;
+      color: #10b981;
+    }
+
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 2rem;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: clamp(1rem, 2vw, 2rem);
       align-items: start;
     }
 
     .left-column {
       display: grid;
       grid-template-rows: auto 1fr;
-      gap: 2rem;
-      height: 100%;
+      gap: clamp(1rem, 2vw, 2rem);
+      min-width: 0;
     }
 
-    /* Sections */
+    .right-sidebar {
+      display: grid;
+      gap: clamp(1rem, 2vw, 2rem);
+      position: sticky;
+      top: 1rem;
+    }
+
     .sidebar-header {
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
     }
 
-    .section-title {
-      font-size: 0.65rem;
-      margin: 0 0 0.5rem 0;
+    .section-title,
+    .sidebar-eyebrow {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       color: var(--text-muted);
     }
 
-    .section-subtitle {
-      font-size: 1.5rem;
-      color: var(--text-main);
-      margin: 0;
+    .section-subtitle,
+    .sidebar-title {
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
       line-height: 1.2;
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Controls Header */
+    .sidebar-desc {
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .controls-card,
+    .map-card,
+    .stats-card,
+    .legend-card {
+      padding: clamp(1rem, 2vw, 1.5rem);
+    }
+
     .controls-card {
-      padding: 1.25rem;
+      position: relative;
       display: flex;
       flex-direction: column;
+      gap: 1.25rem;
+      min-width: 0;
     }
 
-    .controls-card .sidebar-header {
-      margin-bottom: 1.25rem;
+    .controls-sheet-handle {
+      display: none;
     }
 
     .controls-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
-      margin-bottom: 1.25rem;
     }
 
     .field {
-      position: relative;
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
 
     .field label {
+      margin-bottom: 0.55rem;
       font-family: "Poppins", sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.66rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       color: var(--text-muted);
-      margin-bottom: 0.5rem;
     }
 
-    /* Stark Minimalist Selects */
     .select-wrapper {
       position: relative;
-      border-bottom: 1.5px solid var(--border);
       display: flex;
       align-items: center;
-      padding: 0.375rem 0;
-      gap: 0.625rem;
-      transition: border-color 0.3s ease;
+      gap: 0.75rem;
+      min-height: 3.25rem;
+      padding: 0 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      background: var(--surface-muted);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
 
     .select-wrapper:hover,
     .select-wrapper:focus-within {
-      border-color: var(--border-hover);
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px rgba(127, 127, 127, 0.12);
     }
 
     .select-icon {
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       color: var(--text-main);
+      flex-shrink: 0;
     }
 
     select {
       flex: 1;
+      width: 100%;
+      min-width: 0;
       border: 0;
       background: transparent;
       color: var(--text-main);
       font-family: "Questrial", sans-serif;
-      font-size: 0.9375rem;
-      appearance: none;
+      font-size: 1rem;
+      line-height: 1.2;
       outline: none;
+      appearance: none;
       cursor: pointer;
     }
 
     select option {
-      background-color: #0a0a0a;
-      color: #ffffff;
-      padding: 0.75rem;
-      font-weight: 500;
-    }
-
-    [data-theme="light"] select option {
-      background-color: #ffffff;
+      background: #ffffff;
       color: #000000;
     }
 
     [data-theme="dark"] select option {
-      background-color: #0a0a0a;
+      background: #111111;
       color: #ffffff;
     }
 
     .select-caret {
-      font-size: 0.625rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
       pointer-events: none;
+      flex-shrink: 0;
     }
 
-    /* Stats Row in Controls */
     .stats-row {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
-      padding-top: 1.25rem;
-      margin-top: auto;
+      padding-top: 1rem;
       border-top: 1px solid var(--border);
     }
 
     .stat-item {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.35rem;
+      min-width: 0;
     }
 
     .stat-label {
       font-family: "Poppins", sans-serif;
-      font-size: 0.5625rem;
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -331,45 +461,50 @@
     }
 
     .stat-value {
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
       line-height: 1;
-      color: var(--text-main);
       font-weight: 700;
+      color: var(--text-main);
+      word-break: break-word;
     }
 
-    /* Map Card */
     .map-card {
-      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      flex: 1;
-      min-height: 600px;
+      gap: 1rem;
+      min-height: 620px;
     }
 
     .map-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .map-tabs {
       display: flex;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .map-tab {
-      padding: 0.5rem 1rem;
-      font-family: "Poppins", sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      background: transparent;
+      min-height: 2.5rem;
+      padding: 0 1rem;
       border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.2s ease;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: "Poppins", sans-serif;
+      font-size: 0.73rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
     }
 
     .map-tab.active,
@@ -381,56 +516,16 @@
 
     #map {
       flex: 1;
-      min-height: 500px;
+      width: 100%;
+      min-height: 520px;
       border: 1px solid var(--border);
-      background: var(--bg);
+      border-radius: 1.25rem;
+      background:
+        linear-gradient(180deg, rgba(127, 127, 127, 0.05), rgba(127, 127, 127, 0.02)),
+        var(--surface-muted);
+      overflow: hidden;
     }
 
-    /* Right Sidebar */
-    .right-sidebar {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 2rem;
-      position: sticky;
-      top: 2rem;
-    }
-
-    .stats-card,
-    .legend-card {
-      padding: 1.25rem;
-    }
-
-    .stats-card .sidebar-header,
-    .legend-card .sidebar-header {
-      margin-bottom: 1.25rem;
-    }
-
-    .sidebar-eyebrow {
-      font-family: "Poppins", sans-serif;
-      display: block;
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .sidebar-title {
-      font-size: 1.5rem;
-      margin: 0;
-      line-height: 1.2;
-      font-weight: 600;
-    }
-
-    .sidebar-desc {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-      line-height: 1.3;
-    }
-
-    /* List Items */
     .stats-list {
       display: flex;
       flex-direction: column;
@@ -440,7 +535,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 0;
+      gap: 1rem;
+      padding: 1rem 0;
       border-bottom: 1px solid var(--border);
     }
 
@@ -450,27 +546,29 @@
     }
 
     .stats-list-item-label {
-      font-size: 1rem;
+      font-size: 0.96rem;
       color: var(--text-muted);
     }
 
     .stats-list-item-value {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
+      line-height: 1;
       color: var(--text-main);
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    /* Legend */
     .legend-list {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 1rem;
+      gap: 1.2rem;
+      margin-top: 0.25rem;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .legend-dot {
@@ -479,147 +577,63 @@
       flex-shrink: 0;
       border-radius: 50%;
       position: relative;
-      transition: all 0.3s ease;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
 
-    /* God Mode Indicators with Glow Effects */
-    .legend-dot--below { 
+    .legend-dot--below {
       background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 
+      box-shadow:
         0 0 12px rgba(16, 185, 129, 0.6),
-        0 0 24px rgba(16, 185, 129, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        0 0 24px rgba(16, 185, 129, 0.25);
       animation: pulseGreen 2s ease-in-out infinite;
     }
 
-    @keyframes pulseGreen {
-      0%, 100% { 
-        box-shadow: 
-          0 0 12px rgba(16, 185, 129, 0.6),
-          0 0 24px rgba(16, 185, 129, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      }
-      50% { 
-        box-shadow: 
-          0 0 16px rgba(16, 185, 129, 0.8),
-          0 0 32px rgba(16, 185, 129, 0.5),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .legend-dot--near { 
+    .legend-dot--near {
       background: linear-gradient(135deg, #f59e0b, #d97706);
-      box-shadow: 
+      box-shadow:
         0 0 12px rgba(245, 158, 11, 0.6),
-        0 0 24px rgba(245, 158, 11, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        0 0 24px rgba(245, 158, 11, 0.25);
       animation: pulseYellow 2s ease-in-out infinite;
     }
 
-    @keyframes pulseYellow {
-      0%, 100% { 
-        box-shadow: 
-          0 0 12px rgba(245, 158, 11, 0.6),
-          0 0 24px rgba(245, 158, 11, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      }
-      50% { 
-        box-shadow: 
-          0 0 16px rgba(245, 158, 11, 0.8),
-          0 0 32px rgba(245, 158, 11, 0.5),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .legend-dot--above { 
+    .legend-dot--above {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      box-shadow: 
+      box-shadow:
         0 0 12px rgba(239, 68, 68, 0.6),
-        0 0 24px rgba(239, 68, 68, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        0 0 24px rgba(239, 68, 68, 0.25);
       animation: pulseRed 2s ease-in-out infinite;
     }
 
-    @keyframes pulseRed {
-      0%, 100% { 
-        box-shadow: 
-          0 0 12px rgba(239, 68, 68, 0.6),
-          0 0 24px rgba(239, 68, 68, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      }
-      50% { 
-        box-shadow: 
-          0 0 16px rgba(239, 68, 68, 0.8),
-          0 0 32px rgba(239, 68, 68, 0.5),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .legend-dot--no-data { 
+    .legend-dot--no-data {
       background: linear-gradient(135deg, #6b7280, #4b5563);
-      box-shadow: 
-        0 0 8px rgba(107, 114, 128, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      opacity: 0.7;
+      box-shadow: 0 0 8px rgba(107, 114, 128, 0.35);
+      opacity: 0.8;
     }
 
-    .legend-dot--out { 
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-      border: 2px solid var(--text-primary);
-      box-shadow: 
-        0 0 8px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      position: relative;
-    }
-
-    .legend-dot--out::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--text-primary), transparent);
-      opacity: 0.2;
-      animation: rotate 3s linear infinite;
+    .legend-dot--out {
+      background: transparent;
+      border: 2px solid var(--text-main);
+      box-shadow: 0 0 8px rgba(127, 127, 127, 0.3);
     }
 
     .legend-dot--out::after {
-      content: '';
+      content: "";
       position: absolute;
-      top: 50%; 
-      left: -2px; 
-      right: -2px;
+      top: 50%;
+      left: -1px;
+      right: -1px;
       height: 2px;
-      background: var(--text-primary);
+      background: var(--text-main);
       transform: translateY(-50%) rotate(45deg);
-      box-shadow: 0 0 4px var(--text-primary);
+      transform-origin: center;
     }
 
     .legend-item:hover .legend-dot {
-      transform: scale(1.15);
-    }
-
-    .legend-item:hover .legend-dot--below {
-      box-shadow: 
-        0 0 20px rgba(16, 185, 129, 0.8),
-        0 0 40px rgba(16, 185, 129, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    }
-
-    .legend-item:hover .legend-dot--near {
-      box-shadow: 
-        0 0 20px rgba(245, 158, 11, 0.8),
-        0 0 40px rgba(245, 158, 11, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    }
-
-    .legend-item:hover .legend-dot--above {
-      box-shadow: 
-        0 0 20px rgba(239, 68, 68, 0.8),
-        0 0 40px rgba(239, 68, 68, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transform: scale(1.1);
     }
 
     .legend-content {
+      min-width: 0;
       flex: 1;
     }
 
@@ -627,111 +641,259 @@
       display: block;
       font-family: "Poppins", sans-serif;
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--text-main);
+      margin-bottom: 0.2rem;
     }
 
     .legend-content span {
-      font-size: 0.85rem;
+      font-size: 0.87rem;
       color: var(--text-muted);
+      line-height: 1.4;
     }
 
-    /* Responsive */
+    @keyframes pulseGreen {
+      0%, 100% {
+        box-shadow:
+          0 0 12px rgba(16, 185, 129, 0.6),
+          0 0 24px rgba(16, 185, 129, 0.25);
+      }
+
+      50% {
+        box-shadow:
+          0 0 16px rgba(16, 185, 129, 0.82),
+          0 0 30px rgba(16, 185, 129, 0.38);
+      }
+    }
+
+    @keyframes pulseYellow {
+      0%, 100% {
+        box-shadow:
+          0 0 12px rgba(245, 158, 11, 0.6),
+          0 0 24px rgba(245, 158, 11, 0.25);
+      }
+
+      50% {
+        box-shadow:
+          0 0 16px rgba(245, 158, 11, 0.82),
+          0 0 30px rgba(245, 158, 11, 0.38);
+      }
+    }
+
+    @keyframes pulseRed {
+      0%, 100% {
+        box-shadow:
+          0 0 12px rgba(239, 68, 68, 0.6),
+          0 0 24px rgba(239, 68, 68, 0.25);
+      }
+
+      50% {
+        box-shadow:
+          0 0 16px rgba(239, 68, 68, 0.82),
+          0 0 30px rgba(239, 68, 68, 0.38);
+      }
+    }
+
     @media (max-width: 1200px) {
-      .main-grid { grid-template-columns: 1fr; }
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
       .right-sidebar {
         position: static;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      #map {
+        min-height: 460px;
       }
     }
 
     @media (max-width: 768px) {
-      .page-shell { padding: 1rem; }
-      .hero-section {
-        padding: 1.5rem;
-        flex-direction: column;
-        align-items: flex-start;
+      body {
+        padding-bottom: calc(var(--mobile-sheet-peek) + 0.75rem);
       }
-      .hero-icon { display: none; }
-      .hero-text h1 { font-size: 2.25rem; }
+
+      .page-shell {
+        padding: 0.85rem;
+      }
+
+      .hero-section {
+        align-items: stretch;
+      }
+
+      .hero-content {
+        flex: 1 1 100%;
+      }
+
       .hero-actions {
         width: 100%;
-        justify-content: space-between;
-        margin-top: 1rem;
+        justify-content: stretch;
       }
-      .admin-link { flex: 1; }
-      
-      /* Reorder: Map first, then controls */
+
+      .admin-link {
+        flex: 1 1 auto;
+      }
+
       .left-column {
         display: flex;
         flex-direction: column-reverse;
       }
-      
-      /* Hide controls by default on mobile */
+
+      .map-card {
+        min-height: auto;
+      }
+
+      #map {
+        min-height: 420px;
+      }
+
+      .right-sidebar {
+        grid-template-columns: 1fr;
+      }
+
       .controls-card {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        border-radius: 24px 24px 0 0;
-        padding: 1.5rem;
-        max-height: 80vh;
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        z-index: 1100;
+        border-radius: 1.5rem;
+        padding-top: 3.75rem;
+        max-height: min(78vh, 620px);
         overflow-y: auto;
-        transform: translateY(calc(100% - 60px));
-        transition: transform 0.3s ease;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-        background: var(--bg) !important;
-        backdrop-filter: none;
+        transform: translateY(calc(100% - var(--mobile-sheet-peek)));
+        transition: transform var(--transition-normal);
+        box-shadow: var(--shadow-mobile-sheet);
       }
-      
+
       .controls-card.expanded {
         transform: translateY(0);
       }
-      
-      /* Filter toggle button */
-      .controls-card::before {
-        content: 'Filters';
+
+      .controls-sheet-handle {
+        display: flex;
         position: absolute;
-        top: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
+        top: 0.8rem;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        padding: 0 1rem;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .controls-sheet-handle-bar {
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--border);
+      }
+
+      .controls-sheet-handle-label {
         font-family: "Poppins", sans-serif;
-        font-size: 0.875rem;
+        font-size: 0.74rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         color: var(--text-main);
-        cursor: pointer;
       }
-      
-      .controls-card::after {
-        content: '';
-        position: absolute;
-        top: 0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
-        height: 4px;
-        background: var(--border);
-        border-radius: 2px;
-        cursor: pointer;
-      }
-      
+
       .controls-card .sidebar-header {
-        margin-top: 2rem;
+        margin-bottom: 1rem;
       }
-      
-      .controls-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      .stats-row { grid-template-columns: 1fr; gap: 1rem; }
-      .map-card, .stats-card, .legend-card { padding: 1.5rem; }
-      #map { min-height: 500px; }
-      .right-sidebar { 
+    }
+
+    @media (max-width: 560px) {
+      .hero-section,
+      .controls-card,
+      .map-card,
+      .stats-card,
+      .legend-card {
+        border-radius: 1.1rem;
+      }
+
+      .hero-icon {
+        width: 2.9rem;
+        height: 2.9rem;
+        font-size: 1.2rem;
+      }
+
+      .hero-text h1 {
+        font-size: 1.7rem;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr auto;
+      }
+
+      .admin-link,
+      .theme-toggle {
+        width: 100%;
+      }
+
+      .stats-row {
         grid-template-columns: 1fr;
-        position: static;
+      }
+
+      .map-header {
+        align-items: stretch;
+      }
+
+      .map-tabs {
+        width: 100%;
+      }
+
+      .map-tab {
+        flex: 1 1 calc(50% - 0.25rem);
+      }
+
+      #map {
+        min-height: 340px;
+      }
+
+      select {
+        font-size: 16px;
+      }
+
+      .stats-list-item-value {
+        font-size: 1.15rem;
+      }
+
+      .legend-item {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .page-shell {
+        padding: 0.7rem;
+      }
+
+      #map {
+        min-height: 300px;
+      }
+
+      .controls-card {
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 0.5rem;
       }
     }
   </style>
@@ -739,22 +901,25 @@
 
 <body>
   <main class="page-shell">
-
-    <header class="hero-section">
+    <header class="hero-section minimal-card">
       <div class="hero-content">
-        <div class="hero-icon">
+        <div class="hero-icon" aria-hidden="true">
           <i class="fa-solid fa-layer-group"></i>
         </div>
+
         <div class="hero-text">
           <h1>FuWell</h1>
           <p>Real-time fuel telemetry. Marinduque regional index.</p>
         </div>
       </div>
+
       <div class="hero-actions">
         <a class="admin-link" href="./admin.html">
-          Admin
+          <i class="fa-solid fa-lock"></i>
+          <span>Admin</span>
         </a>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
           <i class="fa-solid fa-circle-half-stroke"></i>
         </button>
       </div>
@@ -763,12 +928,22 @@
     <div id="loadingState" class="status-banner" hidden>
       Syncing data blocks...
     </div>
-    <div id="errorBanner" class="status-banner" hidden></div>
+
+    <div id="errorBanner" class="status-banner status-banner--error" hidden></div>
 
     <div class="main-grid">
       <div class="left-column">
+        <section class="minimal-card controls-card" id="controlsCard">
+          <button
+            class="controls-sheet-handle"
+            id="controlsSheetHandle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="controlsCard">
+            <span class="controls-sheet-handle-bar"></span>
+            <span class="controls-sheet-handle-label">Filters</span>
+          </button>
 
-        <section class="minimal-card controls-card">
           <div class="sidebar-header">
             <h2 class="section-title">Query Parameters</h2>
             <p class="section-subtitle">Define grade and sector.</p>
@@ -778,24 +953,32 @@
             <div class="field">
               <label for="fuelType">Fuel Grade</label>
               <div class="select-wrapper">
-                <span class="select-icon"><i id="fuelSelectIcon" class="fa-solid fa-droplet"></i></span>
+                <span class="select-icon">
+                  <i id="fuelSelectIcon" class="fa-solid fa-droplet"></i>
+                </span>
                 <select id="fuelType">
                   <option value="unleaded">Unleaded (91 RON)</option>
                   <option value="premium">Premium (95 RON)</option>
                   <option value="diesel">Diesel</option>
                 </select>
-                <span class="select-caret"><i class="fa-solid fa-angle-down"></i></span>
+                <span class="select-caret">
+                  <i class="fa-solid fa-angle-down"></i>
+                </span>
               </div>
             </div>
 
             <div class="field">
               <label for="townFilter">Sector</label>
               <div class="select-wrapper">
-                <span class="select-icon"><i class="fa-solid fa-map-pin"></i></span>
+                <span class="select-icon">
+                  <i class="fa-solid fa-map-pin"></i>
+                </span>
                 <select id="townFilter">
                   <option value="all">All Sectors</option>
                 </select>
-                <span class="select-caret"><i class="fa-solid fa-angle-down"></i></span>
+                <span class="select-caret">
+                  <i class="fa-solid fa-angle-down"></i>
+                </span>
               </div>
             </div>
           </div>
@@ -805,6 +988,7 @@
               <span class="stat-label">Market Index</span>
               <div id="averagePill" class="stat-value">₱0.00</div>
             </div>
+
             <div class="stat-item">
               <span class="stat-label">Active Nodes</span>
               <div id="resultPill" class="stat-value">0</div>
@@ -815,27 +999,30 @@
         <section class="minimal-card map-card">
           <div class="map-header">
             <h3 class="section-title">Telemetry Map</h3>
+
             <div class="map-tabs">
-              <button class="map-tab active">Vector</button>
-              <button class="map-tab">Satellite</button>
+              <button class="map-tab active" type="button">Vector</button>
+              <button class="map-tab" type="button">Satellite</button>
             </div>
           </div>
+
           <div id="map"></div>
         </section>
       </div>
 
       <aside class="right-sidebar">
-
         <section class="minimal-card stats-card">
           <div class="sidebar-header">
             <span class="sidebar-eyebrow">Current Scope</span>
             <h2 class="sidebar-title" id="fuelThemeChip">Unleaded</h2>
           </div>
+
           <div class="stats-list">
             <div class="stats-list-item">
               <span class="stats-list-item-label">Verified Stations</span>
               <span class="stats-list-item-value">0</span>
             </div>
+
             <div class="stats-list-item">
               <span class="stats-list-item-label">Regional Coverage</span>
               <span class="stats-list-item-value">0</span>
@@ -892,50 +1079,128 @@
             </div>
           </div>
         </section>
-
       </aside>
     </div>
   </main>
 
   <script>
-    // Theme Toggle Logic
-    const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', currentTheme);
+    /*
+     * File: index.js
+     * Description: Theme control and responsive mobile filter sheet logic.
+     * Version: 2.0.0
+     */
+    (function initializeDashboardUi() {
+      "use strict";
 
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      const THEME_STORAGE_KEY = "fuwell_theme";
+      const MOBILE_BREAKPOINT = 768;
 
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-    });
+      const rootElement = document.documentElement;
+      const themeToggleButton = document.getElementById("themeToggle");
+      const controlsCardElement = document.getElementById("controlsCard");
+      const controlsSheetHandleButton = document.getElementById("controlsSheetHandle");
 
-    // Mobile Filter Toggle
-    if (window.innerWidth <= 768) {
-      const controlsCard = document.querySelector('.controls-card');
-      
-      // Toggle on click anywhere on the card header area
-      controlsCard.addEventListener('click', (e) => {
-        // Only toggle if clicking on the top area (first 60px)
-        const rect = controlsCard.getBoundingClientRect();
-        const clickY = e.clientY - rect.top;
-        
-        if (clickY < 60 || e.target === controlsCard) {
-          controlsCard.classList.toggle('expanded');
+      /**
+       * Determine whether viewport is currently mobile-sized.
+       * @returns {boolean}
+       */
+      function isMobileViewport() {
+        return window.innerWidth <= MOBILE_BREAKPOINT;
+      }
+
+      /**
+       * Apply the selected theme.
+       * @param {string} themeName
+       * @returns {void}
+       */
+      function applyTheme(themeName) {
+        const normalizedTheme = themeName === "dark" ? "dark" : "light";
+        rootElement.setAttribute("data-theme", normalizedTheme);
+      }
+
+      /**
+       * Read saved theme preference from localStorage.
+       * @returns {string}
+       */
+      function readSavedTheme() {
+        return localStorage.getItem(THEME_STORAGE_KEY) || "light";
+      }
+
+      /**
+       * Toggle the mobile controls sheet.
+       * @param {boolean} shouldExpand
+       * @returns {void}
+       */
+      function setControlsSheetState(shouldExpand) {
+        if (!controlsCardElement || !controlsSheetHandleButton) {
+          return;
         }
-      });
 
-      // Close when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!controlsCard.contains(e.target) && controlsCard.classList.contains('expanded')) {
-          controlsCard.classList.remove('expanded');
+        controlsCardElement.classList.toggle("expanded", shouldExpand);
+        controlsSheetHandleButton.setAttribute("aria-expanded", shouldExpand ? "true" : "false");
+      }
+
+      /**
+       * Reset the controls sheet when leaving mobile view.
+       * @returns {void}
+       */
+      function syncControlsSheetByViewport() {
+        if (!controlsCardElement || !controlsSheetHandleButton) {
+          return;
         }
-      });
-    }
+
+        if (!isMobileViewport()) {
+          controlsCardElement.classList.remove("expanded");
+          controlsSheetHandleButton.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      applyTheme(readSavedTheme());
+
+      if (themeToggleButton) {
+        themeToggleButton.addEventListener("click", function handleThemeToggle() {
+          const currentTheme = rootElement.getAttribute("data-theme");
+          const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+          applyTheme(nextTheme);
+          localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        });
+      }
+
+      if (controlsSheetHandleButton && controlsCardElement) {
+        controlsSheetHandleButton.addEventListener("click", function handleSheetToggle(event) {
+          event.stopPropagation();
+
+          const isExpanded = controlsCardElement.classList.contains("expanded");
+          setControlsSheetState(!isExpanded);
+        });
+
+        document.addEventListener("click", function handleOutsideClick(event) {
+          if (!isMobileViewport()) {
+            return;
+          }
+
+          const clickTarget = event.target;
+
+          if (!controlsCardElement.contains(clickTarget)) {
+            setControlsSheetState(false);
+          }
+        });
+
+        document.addEventListener("keydown", function handleEscape(event) {
+          if (event.key === "Escape" && isMobileViewport()) {
+            setControlsSheetState(false);
+          }
+        });
+
+        controlsCardElement.addEventListener("click", function preventUnexpectedClose(event) {
+          event.stopPropagation();
+        });
+
+        window.addEventListener("resize", syncControlsSheetByViewport);
+        syncControlsSheetByViewport();
+      }
+    })();
   </script>
 
   <script type="module" src="/src/main.ts"></script>
