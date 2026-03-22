@@ -1200,6 +1200,98 @@
         window.addEventListener("resize", syncControlsSheetByViewport);
         syncControlsSheetByViewport();
       }
+
+      // Touch drag/swipe functionality for mobile filter panel handle
+      if (controlsCardElement && controlsSheetHandleButton) {
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let startTransform = 0;
+
+        const handleTouchStart = (e) => {
+          if (!isMobileViewport()) return;
+          
+          const touch = e.touches[0];
+          startY = touch.clientY;
+          isDragging = true;
+          
+          const isExpanded = controlsCardElement.classList.contains("expanded");
+          const computedStyle = window.getComputedStyle(controlsCardElement);
+          const currentTransform = computedStyle.transform;
+          
+          if (currentTransform && currentTransform !== 'none') {
+            const matrix = new DOMMatrix(currentTransform);
+            startTransform = matrix.m42;
+          } else {
+            startTransform = isExpanded ? 0 : (window.innerHeight - 60);
+          }
+          
+          controlsCardElement.style.transition = 'none';
+        };
+
+        const handleTouchMove = (e) => {
+          if (!isDragging || !isMobileViewport()) return;
+          
+          const touch = e.touches[0];
+          currentY = touch.clientY;
+          const deltaY = currentY - startY;
+          
+          const isExpanded = controlsCardElement.classList.contains("expanded");
+          
+          // If expanded, only allow dragging down to close, not up
+          if (isExpanded && deltaY < 0) {
+            return; // Don't allow dragging up when already expanded
+          }
+          
+          // If collapsed, only allow dragging up to open, not down
+          if (!isExpanded && deltaY > 0) {
+            return; // Don't allow dragging down when already collapsed
+          }
+          
+          let newTransform = startTransform + deltaY;
+          
+          // Limit dragging range
+          const maxTransform = window.innerHeight - 60;
+          newTransform = Math.max(0, Math.min(newTransform, maxTransform));
+          
+          controlsCardElement.style.transform = `translateY(${newTransform}px)`;
+          
+          // Prevent scrolling while dragging handle
+          e.preventDefault();
+        };
+
+        const handleTouchEnd = () => {
+          if (!isDragging || !isMobileViewport()) return;
+          
+          isDragging = false;
+          controlsCardElement.style.transition = '';
+          
+          const deltaY = currentY - startY;
+          const threshold = 50;
+          
+          const isExpanded = controlsCardElement.classList.contains("expanded");
+          
+          if (isExpanded) {
+            if (deltaY > threshold) {
+              setControlsSheetState(false);
+            } else {
+              controlsCardElement.style.transform = '';
+            }
+          } else {
+            if (deltaY < -threshold) {
+              setControlsSheetState(true);
+            } else {
+              controlsCardElement.style.transform = '';
+            }
+          }
+        };
+
+        // Attach drag only to handle button
+        controlsSheetHandleButton.addEventListener('touchstart', handleTouchStart, { passive: true });
+        controlsSheetHandleButton.addEventListener('touchmove', handleTouchMove, { passive: false });
+        controlsSheetHandleButton.addEventListener('touchend', handleTouchEnd);
+        controlsSheetHandleButton.addEventListener('touchcancel', handleTouchEnd);
+      }
     })();
   </script>
 
